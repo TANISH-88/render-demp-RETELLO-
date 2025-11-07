@@ -28,11 +28,17 @@ def parse_json_array(text: str):
 
 load_dotenv()
 GROQ_KEY = os.getenv("GROQ_API_KEY")
-GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b")  # ✅ Updated default model
 
-# ✅ Debug log to confirm key is loaded
+# ✅ Correct new endpoint for Groq
+GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
+
+# ✅ Use the correct updated model name
+GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b-32768")
+
+# ✅ Debug log to confirm key loaded
 print("Loaded GROQ_API_KEY:", bool(GROQ_KEY))
+print("Using Groq URL:", GROQ_URL)
+print("Model in use:", GROQ_MODEL)
 
 app = Flask(__name__)
 model = joblib.load("rent_pipe.pkl")
@@ -77,16 +83,20 @@ def suggest():
             """Send request to Groq API."""
             resp = requests.post(
                 GROQ_URL,
-                headers={"Authorization": f"Bearer {GROQ_KEY}", "Content-Type": "application/json"},
+                headers={
+                    "Authorization": f"Bearer {GROQ_KEY}",
+                    "Content-Type": "application/json"
+                },
                 json=prompt_payload,
                 timeout=30
             )
-            resp.raise_for_status()
-
-            # ✅ Debug output (to see Groq’s real response in Render logs)
-            print("🔍 GROQ RAW:", resp.text[:400])
-
+            if resp.status_code != 200:
+                print("Groq API Error:", resp.status_code, resp.text)
+                raise Exception(f"Groq API returned {resp.status_code}")
+            
             j = resp.json()
+            print("🔍 GROQ RAW:", j)  # Debug: show Groq response in logs
+
             if "choices" in j and len(j["choices"]) > 0:
                 msg = j["choices"][0].get("message", {}).get("content", "")
                 return msg.strip()
@@ -95,23 +105,25 @@ def suggest():
         # ------------------ AI Prompt ------------------
         user_prompt = (
             f"Monthly rent budget: ₹{price:,.2f}.\n\n"
-            "Find 3–5 realistic and **unique luxury rental properties** within this budget.\n"
+            "Find 3–5 **realistic and unique luxury rental properties** within this budget.\n"
             "Search globally — India, Dubai, Singapore, London, New York, etc.\n"
             "Each suggestion must include **Property Name — Area, City, Country**.\n"
-            "Avoid repeating any common names like Lodha, DLF, or Prestige.\n"
-            "Output ONLY a JSON array of strings (no text, no comments).\n"
-            "Example format only:\n"
+            "Avoid repeating any known names like Lodha, DLF, Prestige, etc.\n"
+            "Output only a JSON array of strings. Example:\n"
             "[\"The Address Residence — Downtown, Dubai, UAE\", \"Vasant Vihar Villas — New Delhi, India\"]"
         )
 
         payload = {
             "model": GROQ_MODEL,
             "messages": [
-                {"role": "system", "content": "You are a global real estate AI assistant that outputs only JSON arrays of property names."},
+                {
+                    "role": "system",
+                    "content": "You are a global real estate AI assistant that outputs only JSON arrays of property names."
+                },
                 {"role": "user", "content": user_prompt}
             ],
             "max_tokens": 280,
-            "temperature": 0.75
+            "temperature": 0.8
         }
 
         # First attempt
@@ -122,17 +134,17 @@ def suggest():
         # Retry if needed
         if not parsed:
             retry_prompt = (
-                "Retry and return 3–5 unique global properties in JSON array format only. "
-                "No explanations, just valid JSON."
+                "Retry and return 3–5 unique global properties as a valid JSON array of strings. "
+                "Do not include explanations or text."
             )
             payload_retry = {
                 "model": GROQ_MODEL,
                 "messages": [
-                    {"role": "system", "content": "You must return only a JSON array with property names and locations."},
+                    {"role": "system", "content": "Return only valid JSON arrays of global property names."},
                     {"role": "user", "content": retry_prompt}
                 ],
                 "max_tokens": 250,
-                "temperature": 0.8
+                "temperature": 0.85
             }
             time.sleep(0.5)
             raw2 = call_groq(payload_retry)
