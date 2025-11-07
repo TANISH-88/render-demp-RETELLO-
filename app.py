@@ -30,7 +30,8 @@ load_dotenv()
 GROQ_KEY = os.getenv("GROQ_API_KEY")
 
 # ✅ Correct new endpoint for Groq
-GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/v1/chat/completions")
+GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
+
 
 # ✅ Use the correct updated model name
 GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b-32768")
@@ -165,4 +166,5 @@ def suggest():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
