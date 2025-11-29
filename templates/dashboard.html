@@ -160,13 +160,13 @@
           <option value="4">4 - Panoramic</option>
       </select>
 
-      <button id="predictBtn">Predict</button>
+      <button id="predictBtn" type="button">Predict</button>
       <div id="result"></div>
   </div>
 </div>
 
 <script>
-// Cursor effect
+// Cursor Animation
 (function(){ 
   const cursor=document.getElementById('cursor');
   let target={x:innerWidth/2,y:innerHeight/2},current={x:target.x,y:target.y};
@@ -181,6 +181,7 @@
   })(); 
 })();
 
+// Labels
 const fieldLabels={
   bedrooms:"Bedrooms",
   bathrooms:"Bathrooms",
@@ -191,6 +192,7 @@ const fieldLabels={
   views:"Views"
 };
 
+// Explanations
 const fallbacks={
   bedrooms:`Bedrooms directly determine how many people can comfortably live in a house.`,
   bathrooms:`Bathrooms greatly influence comfort and rental desirability.`,
@@ -201,53 +203,52 @@ const fallbacks={
   views:`Views significantly boost attraction & rental pricing.`
 };
 
-// FINAL WORKING IMAGE LINKS
+// IMAGES
 const images = {
 
   bedrooms: [
-    { src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80", caption: "Cozy Bedroom" },
-    { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80", caption: "Spacious Bedroom" }
+    { src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80", caption: "Cozy Bedroom" },
+    { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80", caption: "Spacious Bedroom" }
   ],
 
   bathrooms: [
-  { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80", caption: "Modern Bathroom" },
-  { src: "https://images.unsplash.com/photo-1600585154161-190c125b5dbf?auto=format&fit=crop&w=1200&q=80", caption: "Luxury Bathroom" }
-],
-
-  lotarea: [
-    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80", caption: "Large Backyard" },
-    { src: "https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?auto=format&fit=crop&w=1200&q=80", caption: "Open Lot Area" }
+    { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Modern Bathroom" },
+    // reuse working image so it always loads
+    { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Luxury Bathroom" }
   ],
 
-  grade: [
-  { src: "https://images.unsplash.com/photo-1600585154121-4099f79239a1?auto=format&fit=crop&w=1200&q=80", caption: "Grade 1: Basic" },
-  { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80", caption: "Grade 5: Standard" },
-  { src: "https://images.unsplash.com/photo-1600585154056-596af3c3c1e3?auto=format&fit=crop&w=1200&q=80", caption: "Grade 9: Premium" },
-  { src: "https://images.unsplash.com/photo-1600585154138-466ad47e76da?auto=format&fit=crop&w=1200&q=80", caption: "Grade 13: Luxury" }
-],
+  lotarea: [
+    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80", caption: "Large Backyard" },
+    { src: "https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?auto=format&fit=crop&w=1000&q=80", caption: "Open Lot Area" }
+  ],
 
+  // all four grades use the same known-working URL
+  grade: [
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Grade 1: Basic" },
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Grade 5: Standard" },
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Grade 9: Premium" },
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Grade 13: Luxury" }
+  ],
 
   condition: [
-    { src: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1200&q=80", caption: "Poor Condition" },
-    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80", caption: "Good Condition" },
-    { src: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80", caption: "Excellent Condition" }
+    { src: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1000&q=80", caption: "Poor Condition" },
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Good Condition" },
+    { src: "https://images.unsplash.com/photo-1600585153898-5f9e1eaa41da?auto=format&fit=crop&w=1000&q=80", caption: "Excellent Condition" }
   ],
 
   waterfront: [
-    { src: "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=1200&q=80", caption: "Waterfront" },
-    { src: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80", caption: "Non-Waterfront" }
+    { src: "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=1000&q=80", caption: "Waterfront" },
+    { src: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80", caption: "Non-Waterfront" }
   ],
 
   views: [
-    { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80", caption: "No View" },
-    { src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80", caption: "Good View" },
-    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80", caption: "Panoramic View" }
+    { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80", caption: "No View" },
+    { src: "https://images.unsplash.com/photo-1486308510493-aa64833637b1?auto=format&fit=crop&w=1000&q=80", caption: "Good View" },
+    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80", caption: "Panoramic View" }
   ]
-
 };
 
-
-
+// Update Guide
 function updateGuide(field){
   const g=document.getElementById('guideBox');
   g.classList.add('hiding');
@@ -259,7 +260,7 @@ function updateGuide(field){
       images[field].forEach(img=>{
         const div=document.createElement('div');
         div.className="image-item";
-        div.innerHTML=`<img src="${img.src}"><br>${img.caption}`;
+        div.innerHTML=`<img src="${img.src}" alt=""><br>${img.caption}`;
         gallery.appendChild(div);
       });
       g.appendChild(gallery);
@@ -274,7 +275,22 @@ function updateGuide(field){
   if(el){el.addEventListener('focus',()=>updateGuide(id)); el.addEventListener('click',()=>updateGuide(id));}
 });
 
+// Typewriter (for prediction text)
+function typeWriter(el,text,speed=30){
+  el.textContent="";
+  let i=0;
+  (function typing(){
+    if(i<text.length){
+      el.textContent+=text.charAt(i);
+      i++;
+      setTimeout(typing,speed);
+    }
+  })();
+}
+
+// Prediction Handling
 document.getElementById('predictBtn').addEventListener('click', async ()=>{
+
   const data={
     bedrooms:bedrooms.value,
     bathrooms:bathrooms.value,
@@ -289,7 +305,7 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
   const aiDiv=document.getElementById('aiSuggestion');
 
   try{
-    const res=await fetch("https://render-demp.onrender.com/predict",{
+    const res=await fetch("http://127.0.0.1:5000/predict",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
@@ -298,29 +314,33 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
     const r=await res.json();
 
     resultDiv.style.display="block";
-    resultDiv.textContent=`Predicted Rent: ₹${Math.round(r.prediction).toLocaleString()}`;
+    resultDiv.style.background='#123624';
+    resultDiv.style.color='#aaffaa';
+
+    const rawText=r.message || 'Prediction complete.';
+    const priceText=rawText.split(/[.!\n]/)[0] + ".";
+    typeWriter(resultDiv,priceText,30);
 
     aiDiv.style.display="block";
-    aiDiv.textContent="Finding premium properties...";
+    aiDiv.textContent="Thinking of best matches...";
 
-    const aiRes=await fetch("https://render-demp.onrender.com/suggest",{
+    const aiRes=await fetch("http://127.0.0.1:5000/suggest",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({price:r.prediction})
     });
 
     const aiData=await aiRes.json();
-    aiDiv.textContent=aiData.suggestion.join("\n");
+    aiDiv.textContent=aiData.suggestion || "No suggestion available.";
 
-  }catch(err){
+  }catch(e){
     resultDiv.style.display="block";
-    resultDiv.textContent="Network error.";
+    resultDiv.style.background='#3a1e1e';
+    resultDiv.style.color='#ffbaba';
+    resultDiv.textContent='Network error.';
   }
 });
 </script>
 
 </body>
 </html>
-
-
-
