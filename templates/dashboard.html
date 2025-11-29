@@ -210,9 +210,16 @@ const images={
   ],
 
   bathrooms:[
-    {src:"https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80",caption:"Modern Bathroom"},
-    {src:"https://images.unsplash.com/photo-1600585154161-190c125b5dbf?auto=format&fit=crop&w=1200&q=80",caption:"Luxury Bathroom"}
-  ],
+    {
+      src:"https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80",
+      caption:"Modern Bathroom"
+    },
+    {
+      src:"https://images.unsplash.com/photo-1600585154154-7123b8c2f210?auto=format&fit=crop&w=1200&q=80",
+      caption:"Luxury Bathroom"
+    }
+],
+
 
   lotarea:[
     {src:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",caption:"Large Backyard"},
@@ -228,10 +235,20 @@ const images={
   ],
 
   condition:[
-    {src:"https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1200&q=80",caption:"Poor Condition"},
-    {src:"https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80",caption:"Good Condition"},
-    {src:"https://images.unsplash.com/photo-1600585153898-5f9e1eaa41da?auto=format&fit=crop&w=1200&q=80",caption:"Excellent Condition"}
-  ],
+    {
+      src:"https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1200&q=80",
+      caption:"Poor Condition"
+    },
+    {
+      src:"https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80",
+      caption:"Good Condition"
+    },
+    {
+      src:"https://images.unsplash.com/photo-1600585153898-5f9e1eaa41da?auto=format&fit=crop&w=1200&q=80",
+      caption:"Excellent Condition"
+    }
+],
+
 
   waterfront:[
     {src:"https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=1200&q=80",caption:"Waterfront"},
@@ -239,11 +256,20 @@ const images={
   ],
 
   views:[
-    {src:"https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",caption:"No View"},
-    {src:"https://images.unsplash.com/photo-1486308510493-aa64833637b1?auto=format&fit=crop&w=1200&q=80",caption:"Good View"},
-    {src:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",caption:"Panoramic View"}
-  ]
-};
+  {
+    src:"https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",
+    caption:"No View"
+  },
+  {
+    src:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    caption:"Good View"
+  },
+  {
+    src:"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80",
+    caption:"Panoramic View"
+  }
+]
+
 
 function updateGuide(field){
   const g=document.getElementById('guideBox');
@@ -318,3 +344,4 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
 
 </body>
 </html>
+
