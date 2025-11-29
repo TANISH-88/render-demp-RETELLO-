@@ -213,7 +213,6 @@ const images = {
 
   bathrooms: [
     { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Modern Bathroom" },
-    // reuse working image so it always loads
     { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Luxury Bathroom" }
   ],
 
@@ -222,14 +221,12 @@ const images = {
     { src: "https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?auto=format&fit=crop&w=1000&q=80", caption: "Open Lot Area" }
   ],
 
-  // all four grades use the same known-working URL
   grade: [
-  { src: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80", caption: "Grade 1: Basic" },
-  { src: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80", caption: "Grade 5: Standard" },
-  { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80", caption: "Grade 9: Premium" },
-  { src: "https://images.unsplash.com/photo-1594301279754-5c6f5108f8f6?auto=format&fit=crop&w=1200&q=80", caption: "Grade 13: Luxury" }
-],
-
+    { src: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80", caption: "Grade 1: Basic" },
+    { src: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80", caption: "Grade 5: Standard" },
+    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1200&q=80", caption: "Grade 9: Premium" },
+    { src: "https://images.unsplash.com/photo-1594301279754-5c6f5108f8f6?auto=format&fit=crop&w=1200&q=80", caption: "Grade 13: Luxury" }
+  ],
 
   condition: [
     { src: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1000&q=80", caption: "Poor Condition" },
@@ -249,7 +246,7 @@ const images = {
   ]
 };
 
-// Update Guide
+// Guide Update Function
 function updateGuide(field){
   const g=document.getElementById('guideBox');
   g.classList.add('hiding');
@@ -270,13 +267,14 @@ function updateGuide(field){
   },350);
 }
 
+// Add listeners
 ['bedrooms','bathrooms','lotarea','grade','condition','waterfront','views']
 .forEach(id=>{
   const el=document.getElementById(id);
   if(el){el.addEventListener('focus',()=>updateGuide(id)); el.addEventListener('click',()=>updateGuide(id));}
 });
 
-// Typewriter (for prediction text)
+// Typewriter
 function typeWriter(el,text,speed=30){
   el.textContent="";
   let i=0;
@@ -306,7 +304,7 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
   const aiDiv=document.getElementById('aiSuggestion');
 
   try{
-    const res=await fetch("http://127.0.0.1:5000/predict",{
+    const res=await fetch("/predict",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
@@ -325,7 +323,7 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
     aiDiv.style.display="block";
     aiDiv.textContent="Thinking of best matches...";
 
-    const aiRes=await fetch("http://127.0.0.1:5000/suggest",{
+    const aiRes=await fetch("/suggest",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({price:r.prediction})
@@ -345,4 +343,3 @@ document.getElementById('predictBtn').addEventListener('click', async ()=>{
 
 </body>
 </html>
-
