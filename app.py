@@ -27,7 +27,7 @@ GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/comple
 GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b-32768")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 model = joblib.load("rent_pipe.pkl")
 
@@ -127,7 +127,20 @@ def suggest():
 
     except Exception as e:
         return jsonify({"suggestion": [f"Error: {str(e)}"]})
+    except Exception as e:
+        return jsonify({"suggestion": [f"Error: {str(e)}"]})
+
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
 
 if __name__ == "__main__":
     app.run(debug=True)
+        
+
 
