@@ -628,7 +628,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
   const aiDiv=document.getElementById('aiSuggestion');
 
   try{
-    const res=await fetch('https://render-demp.onrender.com',{
+    const res=await fetch('https://render-demp.onrender.com/predict',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(data)
@@ -645,7 +645,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
     aiDiv.style.display='block';
     aiDiv.textContent="Finding best matches for this range...";
 
-    const aiRes=await fetch('https://render-demp.onrender.com',{
+    const aiRes=await fetch('https://render-demp.onrender.com/suggest', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({price:r.prediction})
@@ -662,4 +662,5 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
 </script>
 </body>
 </html>
+
 
