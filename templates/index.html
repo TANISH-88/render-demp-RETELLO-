@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rentello</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:"Segoe UI", Arial, sans-serif;  
-  color:white;
-   overflow-x:hidden; 
-    background:#0e0e0e; }
+  * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
 
+  body {
+    font-family:"Segoe UI", Arial, sans-serif;
+    color:white;
+    overflow-x:hidden;
+    background:#05060a;
+  }
+
+  /* -------- Global Animation on Load -------- */
   .page-load {
     opacity:0;
     transform: translateY(-30px);
@@ -20,111 +28,397 @@
     to { opacity:1; transform: translateY(0); }
   }
 
+  /* -------- NAVBAR -------- */
   .navbar {
-    position: fixed; top:0; left:0; width:100%;
-    display:flex; justify-content:space-between; align-items:center;
-    padding:15px 60px; z-index:1000;
-    background: rgba(255,255,255,0.08); backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255,255,0.1);
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+    background: rgba(5,5,10,0.85);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
   }
-  .navbar-left { font-size:28px; font-weight:bold; letter-spacing:1px; }
-  .navbar-right { display:flex; gap:30px; }
 
-  .nav-btn { background:transparent; border:none; color:white; font-size:16px;
-     cursor:pointer; padding:8px 14px; border-radius:6px;
-     transition:background 0.3s; }
-  .nav-btn:hover { background: rgba(255,255,255,0.15); }
+  .nav-content {
+    max-width:1200px;
+    margin:0 auto;
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
 
+  .navbar-left {
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:1px;
+  }
+
+  .navbar-left span {
+    color:#ff7b54;
+  }
+
+  .nav-links {
+    list-style:none;
+    display:flex;
+    gap:26px;
+    align-items:center;
+  }
+
+  .nav-links a {
+    text-decoration:none;
+    color:#f9fafb;
+    font-size:15px;
+    font-weight:500;
+    opacity:0.85;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    opacity:1;
+    transform:translateY(-1px);
+  }
+
+  .nav-cta {
+    padding:8px 16px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.06);
+    font-size:14px;
+  }
+
+  /* -------- HAMBURGER (MOBILE) -------- */
+  .hamburger {
+    display:none;
+    width:34px;
+    height:34px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.04);
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+
+  .hamburger-lines {
+    width:17px;
+    height:2px;
+    background:#f9fafb;
+    position:relative;
+    transition:background 0.2s ease;
+  }
+
+  .hamburger-lines::before,
+  .hamburger-lines::after {
+    content:"";
+    position:absolute;
+    left:0;
+    width:17px;
+    height:2px;
+    background:#f9fafb;
+    transition:transform 0.25s ease, top 0.25s ease, bottom 0.25s ease, opacity 0.2s ease;
+  }
+
+  .hamburger-lines::before {
+    top:-5px;
+  }
+
+  .hamburger-lines::after {
+    bottom:-5px;
+  }
+
+  .hamburger.open .hamburger-lines {
+    background:transparent;
+  }
+
+  .hamburger.open .hamburger-lines::before {
+    top:0;
+    transform:rotate(45deg);
+  }
+
+  .hamburger.open .hamburger-lines::after {
+    bottom:0;
+    transform:rotate(-45deg);
+  }
+
+  /* -------- HERO SECTION -------- */
   .hero {
-    height:100vh; width:100%; position:relative; overflow:hidden;
-    display:flex; justify-content:center; align-items:center;
-    text-align:center; padding:0 20px;
+    height:100vh;
+    width:100%;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:0 20px;
   }
+
   .bg-layer {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    background-size:cover; background-position:center;
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background-size:cover;
+    background-position:center;
     transition: opacity 2s ease-in-out, transform 8s ease-in-out;
-    z-index:-2; opacity:0;
+    z-index:-2;
+    opacity:0;
   }
-  .bg-layer.active { opacity:1; transform: scale(1.05); }
+
+  .bg-layer.active {
+    opacity:1;
+    transform: scale(1.05);
+  }
 
   .overlay {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.55); z-index:-1;
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:radial-gradient(circle at top, rgba(0,0,0,0.55), rgba(0,0,0,0.85));
+    z-index:-1;
   }
 
-  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; text-align: center; }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 16px;
+    margin-top:60px; /* to avoid nav overlap on small screens */
+  }
 
   .hero-content h1, .hero-content p {
-    opacity:0; transform:translateY(30px);
+    opacity:0;
+    transform:translateY(30px);
     transition: opacity 1.6s ease, transform 1.6s ease;
   }
 
-  .fade-in { opacity:1 !important; transform:translateY(0) !important; }
-  .fade-out { opacity:0 !important; transform:translateY(40px) !important; }
+  .fade-in {
+    opacity:1 !important;
+    transform:translateY(0) !important;
+  }
+
+  .fade-out {
+    opacity:0 !important;
+    transform:translateY(40px) !important;
+  }
 
   .hero-content h1 {
-    font-size: 58px; font-weight: 600; line-height: 1.2;
-    margin-bottom: 20px;
+    font-size: clamp(32px, 4.2vw, 56px);
+    font-weight: 650;
+    line-height: 1.15;
+    margin-bottom: 18px;
     text-shadow: 3px 3px 14px rgba(0,0,0,0.9);
   }
 
   .hero-content p {
-    font-size: 20px; line-height: 1.6; margin-bottom: 40px;
+    font-size: clamp(15px, 2vw, 19px);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    color:#e5e7eb;
     text-shadow: 2px 2px 12px rgba(0,0,0,0.8);
   }
 
-  .hero-buttons { display:flex; justify-content:center; gap:20px; }
+  .hero-highlight {
+    display:inline-block;
+    padding:5px 13px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(0,0,0,0.45);
+    font-size:13px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    color:#d1fae5;
+  }
+
+  .hero-buttons {
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
 
   .btn {
-    padding:12px 28px; font-size:16px; font-weight:500;
-    border:none; border-radius:8px; cursor:pointer; transition:all 0.3s ease;
+    padding:12px 26px;
+    font-size:15px;
+    font-weight:500;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all 0.25s ease;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
   }
 
-  .btn-primary { background:#ff7b54; color:white; }
+  .btn-primary {
+    background:#ff7b54;
+    color:white;
+    box-shadow:0 0 18px rgba(255,123,84,0.6);
+  }
+
   .btn-primary:hover {
-    background:#ff5733; transform: scale(1.05);
-    box-shadow:0 0 12px rgba(255,123,84,0.6);
+    background:#ff5733;
+    transform: translateY(-1px) scale(1.03);
+    box-shadow:0 0 20px rgba(255,123,84,0.8);
   }
+
   .btn-secondary {
-    background: rgba(255,255,255,0.15); color:white;
-    border:1px solid rgba(255,255,255,0.3);
+    background: rgba(0,0,0,0.45);
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
   }
-  .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+  }
+
+  .btn span {
+    margin-left:6px;
+    font-size:16px;
+  }
+
+  /* -------- DESKTOP / LARGE SCREENS -------- */
+  @media (min-width: 992px) {
+    .nav-content {
+      padding:16px 32px;
+    }
+    .hero-content {
+      margin-top:40px;
+    }
+  }
+
+  /* -------- TABLET & BELOW -------- */
+  @media (max-width: 900px) {
+    .nav-content {
+      padding:12px 18px;
+    }
+  }
+
+  /* -------- MOBILE NAV -------- */
+  @media (max-width: 768px) {
+    .nav-links {
+      position:absolute;
+      top:58px;
+      right:16px;
+      left:16px;
+      flex-direction:column;
+      align-items:flex-start;
+      padding:14px;
+      gap:10px;
+      border-radius:14px;
+      background:rgba(5,5,10,0.96);
+      border:1px solid rgba(255,255,255,0.08);
+      display:none;
+    }
+
+    .nav-links.open {
+      display:flex;
+    }
+
+    .nav-links a {
+      width:100%;
+      padding:8px 4px;
+      font-size:14px;
+    }
+
+    .nav-cta {
+      width:100%;
+      text-align:center;
+      justify-content:center;
+    }
+
+    .hamburger {
+      display:flex;
+    }
+
+    .hero {
+      padding:0 16px;
+    }
+
+    .hero-content {
+      padding-top:32px;
+      margin-top:40px;
+    }
+
+    .hero-buttons {
+      flex-direction:column;
+      align-items:stretch;
+    }
+
+    .btn {
+      width:100%;
+      max-width:320px;
+      margin:0 auto;
+    }
+  }
+
+  /* -------- EXTRA SMALL -------- */
+  @media (max-width: 480px) {
+    .navbar-left {
+      font-size:22px;
+    }
+    .hero-content h1 {
+      font-size:28px;
+    }
+    .hero-content p {
+      font-size:14px;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="navbar page-load" style="animation-delay:0.2s">
-  <div class="navbar-left">Rentello</div>
-  <div class="navbar-right">
-    <button class="nav-btn">Home</button>
-    <button class="nav-btn">Listings</button>
-    <button class="nav-btn">Features</button>
-    <button class="nav-btn">Pricing</button>
-    <button class="nav-btn">Contact</button>
-  </div>
-</div>
+<!-- NAVBAR -->
+<nav class="navbar page-load" style="animation-delay:0.2s">
+  <div class="nav-content">
+    <div class="navbar-left">
+      Rent<span>ello</span>
+    </div>
 
-<section class="hero">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#listings">Listings</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+      <div class="hamburger-lines"></div>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
   <div class="bg-layer active" id="bg1" style="background-image:url('/static/villa1.jpg')"></div>
   <div class="bg-layer" id="bg2"></div>
   <div class="overlay"></div>
 
   <div class="hero-content page-load" style="animation-delay:0.6s">
+    <div class="hero-highlight">AI-powered rental price insights</div>
     <h1 id="heroTitle">Find Your Dream Home</h1>
     <p id="heroDesc">Discover the best rental homes in your city with Rentello.</p>
     <div class="hero-buttons page-load" style="animation-delay:1s">
-
-      <!-- FIXED HERE -->
-      <a href="/dashboard"><button class="btn btn-primary">Let's predict</button></a>
-
-      <button class="btn btn-secondary">Explore Listings</button>
+      <a href="dashboard" class="btn btn-primary">
+        Let's Predict
+        <span>→</span>
+      </a>
+      <button class="btn btn-secondary">
+        Explore Listings
+      </button>
     </div>
   </div>
 </section>
 
 <script>
+
 const images = [
   "/static/villa4.jpg",
   "/static/villa2.jpg",
@@ -194,6 +488,22 @@ window.addEventListener("load", () => {
 });
 
 setInterval(changeSlide, 6000);
+
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const navLinks = document.getElementById("navLinks");
+
+hamburgerBtn.addEventListener("click", () => {
+  navLinks.classList.toggle("open");
+  hamburgerBtn.classList.toggle("open");
+});
+
+
+navLinks.addEventListener("click", (e) => {
+  if(e.target.tagName === "A" && window.innerWidth <= 768){
+    navLinks.classList.remove("open");
+    hamburgerBtn.classList.remove("open");
+  }
+});
 </script>
 </body>
 </html>
