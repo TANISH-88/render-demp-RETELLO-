@@ -5,7 +5,17 @@
 <title>Prediction</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  html,body{height:100%; margin:0; overflow:hidden; font-family:Inter,system-ui; background:#0f172a; color:#e6eef8}
+
+  /* ✅ FIXED SCROLLING (IMPORTANT FIX) */
+  html, body{
+    height:100%;
+    margin:0;
+    overflow-x:hidden;   /* allow horizontal lock */
+    overflow-y:auto;     /* allow vertical scrolling */
+    font-family:Inter,system-ui;
+    background:#0f172a;
+    color:#e6eef8;
+  }
 
   .patreon-bg{
     position:fixed; inset:0; z-index:-2; pointer-events:none;
@@ -13,7 +23,8 @@
     radial-gradient(circle at 80% 60%,#6ec7ff 0%,transparent 60%),
     radial-gradient(circle at 50% 80%,#a07bff 0%,transparent 60%),
     radial-gradient(circle at 30% 70%,#ff9f6e 0%,transparent 60%);
-    background-size:200% 200%; filter:blur(160px) saturate(1.25);
+    background-size:200% 200%;
+    filter:blur(160px) saturate(1.25);
     animation:moveGradients 45s ease-in-out infinite alternate
   }
 
@@ -37,32 +48,37 @@
   }
 
   .cursor{
-    position:fixed; left:0; top:0; width:300px; height:300px; border-radius:50%;
-    pointer-events:none; z-index:9999;
+    position:fixed; left:0; top:0; width:300px; height:300px;
+    border-radius:50%; pointer-events:none; z-index:9999;
     background:radial-gradient(circle,rgba(255,255,255,0.12),rgba(56,189,248,0.05) 40%,transparent 70%);
     filter:blur(80px); transform:translate(-50%,-50%);
     mix-blend-mode:screen; transition:opacity 150ms linear
   }
 
   .container{
-    position:relative; z-index:2; display:flex; height:100vh;
-    padding:40px; box-sizing:border-box; gap:4%
+    position:relative; z-index:2; display:flex;
+    min-height:100vh; padding:40px; box-sizing:border-box; gap:4%;
   }
 
   @media(max-width:900px){
-    .container{flex-direction:column; padding:20px}
+    .container{ flex-direction:column; padding:20px }
   }
 
+  /* ✅ FIXED guide scroll and height */
   .guide{
     width:48%; min-height:280px; padding:32px 36px;
-    background:rgba(15,18,26,0.45); backdrop-filter:blur(12px) saturate(1.05);
-    border-radius:16px; color:#eee; display:flex; flex-direction:column;
-    transition:opacity 0.4s ease,transform 0.4s ease; overflow-y:auto
+    background:rgba(15,18,26,0.45);
+    backdrop-filter:blur(12px) saturate(1.05);
+    border-radius:16px; color:#eee;
+    display:flex; flex-direction:column;
+    transition:opacity 0.4s ease,transform 0.4s ease;
+    overflow-y:auto;      
+    max-height:75vh;      /* 🟢 IMPORTANT FIX */
   }
 
-  .guide.hiding{opacity:0; transform:translateY(8px)}
-  .guide h2{color:rgb(237, 96, 44); margin:0 0 12px; font-size:26px}
-  .guide p{margin:0; font-size:17px; line-height:1.7; color:#cfd4e0; white-space:pre-wrap}
+  .guide.hiding{ opacity:0; transform:translateY(8px) }
+  .guide h2{ color:rgb(237, 96, 44); margin:0 0 12px; font-size:26px }
+  .guide p{ margin:0; font-size:17px; line-height:1.7; color:#cfd4e0; white-space:pre-wrap }
 
   .form{
     width:48%; display:flex; flex-direction:column;
@@ -75,14 +91,15 @@
   }
 
   .form button{
-    margin-top:20px; padding:16px 28px; font-size:17px; border-radius:10px;
-    border:none; background:rgb(237,96,44); color:#06202a; cursor:pointer; font-weight:600
+    margin-top:20px; padding:16px 28px; font-size:17px;
+    border-radius:10px; border:none; background:rgb(237,96,44);
+    color:#06202a; cursor:pointer; font-weight:600
   }
 
   #result{
     margin-top:18px; padding:14px; border-radius:10px; display:none;
     width:100%; text-align:center; font-weight:700; font-size:20px;
-    letter-spacing:1px; color:#aaffaa; background:#123624;
+    background:#123624; color:#aaffaa;
     box-shadow:0 0 18px rgba(56,189,248,0.35)
   }
 
@@ -92,12 +109,13 @@
     color:#e6eef8; line-height:1.6; font-size:16px
   }
 
-  .image-gallery{margin-top:16px; display:flex; flex-wrap:wrap; gap:14px}
-  .image-item{text-align:center; font-size:14px; color:#cfd4e0}
+  .image-gallery{ margin-top:16px; display:flex; flex-wrap:wrap; gap:14px }
+  .image-item{ text-align:center; font-size:14px; color:#cfd4e0 }
   .image-item img{
     width:220px; height:150px; object-fit:cover; border-radius:10px;
     box-shadow:0 4px 10px rgba(0,0,0,.4)
   }
+
 </style>
 </head>
 <body>
@@ -134,10 +152,14 @@
   function lerp(a,b,t){return a+(b-a)*t}
   window.addEventListener('mousemove',e=>{target.x=e.clientX;target.y=e.clientY;cursor.style.opacity='1'});
   window.addEventListener('mouseleave',()=>cursor.style.opacity='0');
-  (function anim(){current.x=lerp(current.x,target.x,0.08);current.y=lerp(current.y,target.y,0.08);cursor.style.left=current.x+'px';cursor.style.top=current.y+'px';requestAnimationFrame(anim)})();
+  (function anim(){current.x=lerp(current.x,target.x,0.08);current.y=lerp(current.y,target.y,0.08);
+    cursor.style.left=current.x+'px';cursor.style.top=current.y+'px';requestAnimationFrame(anim)})();
 })();
 
-const fieldLabels={bedrooms:"Bedrooms",bathrooms:"Bathrooms",lotarea:"Lot Area",grade:"Grade",condition:"Condition",waterfront:"Waterfront",views:"Views"};
+const fieldLabels={
+  bedrooms:"Bedrooms", bathrooms:"Bathrooms", lotarea:"Lot Area",
+  grade:"Grade", condition:"Condition", waterfront:"Waterfront", views:"Views"
+};
 
 const fallbacks={
   bedrooms:`Bedrooms directly determine how many people can comfortably live in a house.`,
@@ -149,8 +171,6 @@ const fallbacks={
   views:`Views enrich living experience and boost value.`
 };
 
-const images={ bedrooms:[], bathrooms:[], lotarea:[], grade:[], condition:[], waterfront:[], views:[] };
-
 function updateGuide(field){
   const g=document.getElementById('guideBox');
   g.classList.add('hiding');
@@ -161,21 +181,15 @@ function updateGuide(field){
 }
 
 ['bedrooms','bathrooms','lotarea','grade','condition','waterfront','views']
-  .forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.addEventListener('focus',()=>updateGuide(id)); el.addEventListener('click',()=>updateGuide(id));}
+.forEach(id=>{
+  const el=document.getElementById(id);
+  if(el){ el.addEventListener('focus',()=>updateGuide(id)); el.addEventListener('click',()=>updateGuide(id)); }
 });
 
 function typeWriter(el,text,speed=30){
   el.textContent="";
   let i=0;
-  function typing(){
-    if(i<text.length){
-      el.textContent+=text.charAt(i);
-      i++;
-      setTimeout(typing,speed);
-    }
-  }
+  function typing(){ if(i<text.length){ el.textContent+=text.charAt(i); i++; setTimeout(typing,speed); } }
   typing();
 }
 
@@ -207,7 +221,7 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
     resultDiv.style.color='#aaffaa';
 
     let rawText=r.message||'Prediction complete.';
-    let priceText=rawText.split(/[.!\n]/)[0]+"."; 
+    let priceText=rawText.split(/[.!\n]/)[0]+".";
     typeWriter(resultDiv,priceText,30);
 
     aiDiv.style.display='block';
