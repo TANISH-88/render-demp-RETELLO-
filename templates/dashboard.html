@@ -2,26 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Prediction</title>
+<title>Prediction - Rentello</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  html,body{
-    height:100%;
+  * {
+    box-sizing:border-box;
     margin:0;
-    overflow:hidden;
-    font-family:Inter,system-ui;
-    background:#0f172a;
-    color:#e6eef8
+    padding:0;
   }
 
+  html,body{
+    height:100%;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#020617;
+    color:#e6eef8;
+  }
+
+  body{
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
+
+  /* Background effects */
   .patreon-bg{
-    position:fixed; inset:0; z-index:-2; pointer-events:none;
-    background:radial-gradient(circle at 20% 40%,#ff6ec7 0%,transparent 60%),
-    radial-gradient(circle at 80% 60%,#6ec7ff 0%,transparent 60%),
-    radial-gradient(circle at 50% 80%,#a07bff 0%,transparent 60%),
-    radial-gradient(circle at 30% 70%,#ff9f6e 0%,transparent 60%);
-    background-size:200% 200%; filter:blur(160px) saturate(1.25);
-    animation:moveGradients 45s ease-in-out infinite alternate
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+      radial-gradient(circle at 20% 40%,#ff6ec7 0%,transparent 60%),
+      radial-gradient(circle at 80% 60%,#6ec7ff 0%,transparent 60%),
+      radial-gradient(circle at 50% 80%,#a07bff 0%,transparent 60%),
+      radial-gradient(circle at 30% 70%,#ff9f6e 0%,transparent 60%);
+    background-size:200% 200%;
+    filter:blur(160px) saturate(1.25);
+    animation:moveGradients 45s ease-in-out infinite alternate;
   }
 
   @keyframes moveGradients{
@@ -31,157 +46,469 @@
   }
 
   .grain{
-    position:fixed; inset:0; z-index:-1; opacity:0.02;
-    pointer-events:none; mix-blend-mode:overlay;
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    opacity:0.02;
+    pointer-events:none;
+    mix-blend-mode:overlay;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><filter id="f"><feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23f)"/></svg>');
-    background-size:cover
+    background-size:cover;
   }
 
   .vignette{
-    position:fixed; inset:0; z-index:0; pointer-events:none;
-    background:radial-gradient(1000px 600px at 50% 50%,transparent 40%,rgba(0,0,0,.45));
-    mix-blend-mode:multiply
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:radial-gradient(1000px 600px at 50% 50%,transparent 40%,rgba(0,0,0,.55));
+    mix-blend-mode:multiply;
   }
 
   .cursor{
-    position:fixed; left:0; top:0; width:300px; height:300px;
-    border-radius:50%; pointer-events:none; z-index:9999;
-    background:radial-gradient(circle,rgba(255,255,255,0.12),
-    rgba(56,189,248,0.05) 40%,transparent 70%);
-    filter:blur(80px); transform:translate(-50%,-50%);
-    mix-blend-mode:screen; transition:opacity 150ms linear
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9999;
+    background:radial-gradient(circle,rgba(255,255,255,0.12),rgba(56,189,248,0.05) 40%,transparent 70%);
+    filter:blur(80px);
+    transform:translate(-50%,-50%);
+    mix-blend-mode:screen;
+    transition:opacity 150ms linear;
+  }
+
+  /* Main layout */
+  .page-wrapper{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    padding:24px 16px 32px;
+    display:flex;
+    justify-content:center;
   }
 
   .container{
-    position:relative; z-index:2; display:flex;
-    height:100vh; padding:40px; box-sizing:border-box; gap:4%
+    width:100%;
+    max-width:1120px;
+    display:flex;
+    gap:32px;
+    align-items:stretch;
   }
 
-  @media(max-width:900px){
-    .container{flex-direction:column; padding:20px}
-  }
-
+  /* Guide card */
   .guide{
-    width:48%; min-height:280px; padding:32px 36px;
-    background:rgba(15,18,26,0.45); backdrop-filter:blur(12px) saturate(1.05);
-    border-radius:16px; display:flex; flex-direction:column;
-    transition:opacity 0.4s ease,transform 0.4s ease; overflow-y:auto
+    flex:1.1;
+    min-height:280px;
+    padding:26px 28px;
+    background:rgba(15,23,42,0.9);
+    backdrop-filter:blur(18px) saturate(1.1);
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,0.35);
+    box-shadow:0 18px 45px rgba(15,23,42,0.9);
+    color:#e5e7eb;
+    display:flex;
+    flex-direction:column;
+    transition:opacity 0.35s ease,transform 0.35s ease;
+    overflow-y:auto;
+    max-height:80vh;
   }
 
-  .guide.hiding{opacity:0; transform:translateY(8px)}
-  .guide h2{color:rgb(237,96,44); margin:0 0 12px; font-size:26px}
-  .guide p{margin:0; font-size:17px; line-height:1.7; color:#cfd4e0}
+  .guide.hiding{
+    opacity:0;
+    transform:translateY(8px);
+  }
 
+  .guide h2{
+    color:rgb(248,113,61);
+    margin:0 0 10px;
+    font-size:clamp(20px,2.5vw,24px);
+    letter-spacing:0.03em;
+  }
+
+  .guide-subtitle{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    color:#9ca3af;
+    margin-bottom:8px;
+  }
+
+  .guide p{
+    margin:0;
+    font-size:15px;
+    line-height:1.7;
+    color:#cfd4e0;
+    white-space:pre-wrap;
+  }
+
+  /* Form card */
   .form{
-    width:48%; display:flex; flex-direction:column;
-    justify-content:center; padding:20px; gap:18px
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:stretch;
+    padding:22px 24px;
+    gap:14px;
+    background:rgba(15,23,42,0.96);
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,0.35);
+    box-shadow:0 18px 45px rgba(15,23,42,0.9);
   }
 
-  .form input,.form select{
-    width:100%; padding:16px; font-size:16px; border-radius:10px;
-    border:none; background:rgba(30,41,59,0.7); color:#e6eef8
+  .form-header{
+    margin-bottom:4px;
+  }
+
+  .form-title{
+    font-size:clamp(20px,2.4vw,24px);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+
+  .form-subtitle{
+    font-size:13px;
+    color:#9ca3af;
+  }
+
+  .field-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:8px;
+  }
+
+  .field{
+    flex:1;
+    min-width:48%;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  .field label{
+    font-size:13px;
+    color:#cbd5f5;
+  }
+
+  .field small{
+    font-size:11px;
+    color:#64748b;
+  }
+
+  .form input,
+  .form select{
+    width:100%;
+    padding:13px 12px;
+    font-size:14px;
+    border-radius:10px;
+    border:1px solid rgba(51,65,85,0.9);
+    background:rgba(15,23,42,0.9);
+    color:#e6eef8;
+    outline:none;
+    transition:border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .form input:focus,
+  .form select:focus{
+    border-color:rgb(56,189,248);
+    box-shadow:0 0 0 1px rgba(56,189,248,0.45);
+    background:#020617;
   }
 
   .form button{
-    margin-top:20px; padding:16px 28px; font-size:17px;
-    border-radius:10px; border:none; cursor:pointer;
-    font-weight:600; background:rgb(237,96,44); color:#06202a
+    margin-top:18px;
+    padding:13px 22px;
+    font-size:15px;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(135deg,rgb(248,113,61),rgb(251,146,60));
+    color:#020617;
+    cursor:pointer;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    align-self:flex-start;
+    box-shadow:0 16px 35px rgba(248,113,61,0.3);
+    transition:transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  }
+
+  .form button:hover{
+    transform:translateY(-1px) scale(1.02);
+    box-shadow:0 20px 45px rgba(248,113,61,0.4);
+    filter:brightness(1.03);
+  }
+
+  .form button:active{
+    transform:translateY(0) scale(0.99);
+    box-shadow:0 10px 25px rgba(248,113,61,0.3);
+  }
+
+  .form button span{
+    font-size:16px;
   }
 
   #result{
-    margin-top:18px; padding:14px; border-radius:10px;
-    display:none; width:100%; text-align:center; font-size:20px;
-    background:#123624; color:#aaffaa; font-weight:700
+    margin-top:16px;
+    padding:12px 14px;
+    border-radius:12px;
+    display:none;
+    width:100%;
+    text-align:center;
+    font-weight:600;
+    font-size:18px;
+    letter-spacing:0.04em;
+    color:#a7f3d0;
+    background:#052e16;
+    box-shadow:0 0 18px rgba(34,197,94,0.35);
   }
 
   #aiSuggestion{
-    margin-top:18px; padding:14px; display:none;
-    background:rgba(20,20,30,0.55); border-radius:10px
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:12px;
+    width:100%;
+    display:none;
+    background:rgba(15,23,42,0.9);
+    border:1px solid rgba(148,163,184,0.35);
+    color:#e6eef8;
+    line-height:1.6;
+    font-size:14px;
   }
 
+  /* Image gallery */
   .image-gallery{
-    margin-top:16px; display:flex; flex-wrap:wrap; gap:14px
+    margin-top:16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
   }
 
   .image-item{
-    text-align:center; font-size:14px; color:#cfd4e0
+    text-align:center;
+    font-size:13px;
+    color:#cfd4e0;
+    max-width:210px;
   }
 
   .image-item img{
-    width:220px; height:150px; object-fit:cover;
-    border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,.4)
+    width:100%;
+    height:130px;
+    object-fit:cover;
+    border-radius:12px;
+    box-shadow:0 4px 16px rgba(0,0,0,.5);
+  }
+
+  /* Tablet breakpoint */
+  @media(max-width:960px){
+    .page-wrapper{
+      padding:20px 14px 28px;
+    }
+    .container{
+      flex-direction:column;
+      gap:20px;
+    }
+    .guide{
+      max-height:none;
+    }
+    .form{
+      padding:18px 18px 20px;
+    }
+    .field{
+      min-width:100%;
+    }
+    .cursor{
+      display:none;
+    }
+  }
+
+  /* Mobile */
+  @media(max-width:600px){
+    .page-wrapper{
+      padding:18px 12px 24px;
+    }
+    .guide{
+      padding:18px 16px;
+      border-radius:16px;
+    }
+    .guide h2{
+      margin-bottom:6px;
+    }
+    .guide-subtitle{
+      font-size:12px;
+    }
+    .guide p{
+      font-size:14px;
+    }
+    .form{
+      padding:16px 14px 18px;
+      border-radius:16px;
+    }
+    .form-title{
+      font-size:18px;
+    }
+    .form-subtitle{
+      font-size:12px;
+    }
+    .form input,
+    .form select{
+      font-size:13px;
+      padding:11px 10px;
+    }
+    .form button{
+      width:100%;
+      justify-content:center;
+      margin-top:14px;
+    }
+    #result{
+      font-size:16px;
+      padding:10px 12px;
+    }
+    #aiSuggestion{
+      font-size:13px;
+      padding:10px 12px;
+    }
+    .image-item{
+      max-width:100%;
+    }
+    .image-item img{
+      height:140px;
+    }
+  }
+
+  /* Extra small */
+  @media(max-width:400px){
+    .page-wrapper{
+      padding:16px 10px 22px;
+    }
+    .guide{
+      padding:15px 13px;
+    }
+    .form{
+      padding:14px 12px 16px;
+    }
   }
 </style>
 </head>
 <body>
+  <div class="patreon-bg"></div>
+  <div class="grain"></div>
+  <div class="vignette"></div>
+  <div id="cursor" class="cursor"></div>
 
-<div class="patreon-bg"></div>
-<div class="grain"></div>
-<div class="vignette"></div>
-<div id="cursor" class="cursor"></div>
+  <div class="page-wrapper">
+    <div class="container">
+      <div class="guide" id="guideBox">
+        <div class="guide-subtitle">Smart Rent Insights</div>
+        <h2>Welcome to Rentello</h2>
+        <p>Focus any field and AI will explain how that field affects rent predictions in detail.</p>
+        <div id="aiSuggestion"></div>
+      </div>
 
-<div class="container">
-  <div class="guide" id="guideBox">
-      <h2>Welcome to Rentello</h2>
-      <p>Focus any field and AI will explain how that field affects rent predictions.</p>
-      <div id="aiSuggestion"></div>
+      <div class="form">
+        <div class="form-header">
+          <div class="form-title">Predict your ideal rent</div>
+          <div class="form-subtitle">Fill a few property details and let our model estimate the price.</div>
+        </div>
+
+        <div class="field-group">
+          <div class="field">
+            <label for="bedrooms">Bedrooms</label>
+            <input type="number" id="bedrooms" placeholder="e.g. 2">
+            <small>More bedrooms usually increase rent.</small>
+          </div>
+
+          <div class="field">
+            <label for="bathrooms">Bathrooms</label>
+            <input type="number" id="bathrooms" placeholder="e.g. 2">
+            <small>Extra bathrooms add comfort and value.</small>
+          </div>
+
+          <div class="field">
+            <label for="lotarea">Lot Area (sq ft)</label>
+            <input type="number" id="lotarea" placeholder="e.g. 2500">
+            <small>Larger outdoor space often means higher demand.</small>
+          </div>
+
+          <div class="field">
+            <label for="grade">Grade</label>
+            <select id="grade">
+              <option value="">Grade (1–13)</option>
+              <option value="1">1 - Basic</option>
+              <option value="5">5 - Standard</option>
+              <option value="9">9 - Premium</option>
+              <option value="13">13 - Luxury</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="condition">Condition</label>
+            <select id="condition">
+              <option value="">Condition (1–5)</option>
+              <option value="1">1 - Poor</option>
+              <option value="3">3 - Good</option>
+              <option value="5">5 - Excellent</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="waterfront">Waterfront</label>
+            <select id="waterfront">
+              <option value="">Waterfront</option>
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="views">Views</label>
+            <select id="views">
+              <option value="">Views (0–4)</option>
+              <option value="0">0 - None</option>
+              <option value="2">2 - Good</option>
+              <option value="4">4 - Panoramic</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="predictBtn" type="button">
+          Predict Rent
+          <span>→</span>
+        </button>
+        <div id="result"></div>
+      </div>
+    </div>
   </div>
-
-  <div class="form">
-      <input type="number" id="bedrooms" placeholder="Bedrooms">
-      <input type="number" id="bathrooms" placeholder="Bathrooms">
-      <input type="number" id="lotarea" placeholder="Lot Area">
-
-      <select id="grade">
-          <option value="">Grade (1–13)</option>
-          <option value="1">1 - Basic</option>
-          <option value="5">5 - Standard</option>
-          <option value="9">9 - Premium</option>
-          <option value="13">13 - Luxury</option>
-      </select>
-
-      <select id="condition">
-          <option value="">Condition (1–5)</option>
-          <option value="1">1 - Poor</option>
-          <option value="3">3 - Good</option>
-          <option value="5">5 - Excellent</option>
-      </select>
-
-      <select id="waterfront">
-          <option value="">Waterfront</option>
-          <option value="0">No</option>
-          <option value="1">Yes</option>
-      </select>
-
-      <select id="views">
-          <option value="">Views (0–4)</option>
-          <option value="0">0 - None</option>
-          <option value="2">2 - Good</option>
-          <option value="4">4 - Panoramic</option>
-      </select>
-
-      <button id="predictBtn" type="button">Predict</button>
-      <div id="result"></div>
-  </div>
-</div>
 
 <script>
-// Cursor Animation
-(function(){ 
+/* Cursor glow (desktop only, auto-hidden via CSS on mobile) */
+(function(){
   const cursor=document.getElementById('cursor');
+  if(!cursor) return;
   let target={x:innerWidth/2,y:innerHeight/2},current={x:target.x,y:target.y};
   function lerp(a,b,t){return a+(b-a)*t}
-  window.addEventListener('mousemove',e=>{target.x=e.clientX;target.y=e.clientY;cursor.style.opacity='1'});
+  window.addEventListener('mousemove',e=>{
+    target.x=e.clientX;
+    target.y=e.clientY;
+    cursor.style.opacity='1';
+  });
   window.addEventListener('mouseleave',()=>cursor.style.opacity='0');
   (function anim(){
     current.x=lerp(current.x,target.x,0.08);
     current.y=lerp(current.y,target.y,0.08);
-    cursor.style.left=current.x+'px';cursor.style.top=current.y+'px';
-    requestAnimationFrame(anim)
-  })(); 
+    cursor.style.left=current.x+'px';
+    cursor.style.top=current.y+'px';
+    requestAnimationFrame(anim);
+  })();
 })();
 
-// Labels
+/* AI guide content */
 const fieldLabels={
   bedrooms:"Bedrooms",
   bathrooms:"Bathrooms",
@@ -192,67 +519,63 @@ const fieldLabels={
   views:"Views"
 };
 
-// Explanations
 const fallbacks={
-  bedrooms:`Bedrooms directly determine how many people can comfortably live in a house.`,
-  bathrooms:`Bathrooms greatly influence comfort and rental desirability.`,
-  lotarea:`Lot Area reflects outdoor space, parking, and property capacity.`,
-  grade:`Grade means construction quality & finishing level.`,
-  condition:`Condition shows property maintenance & repair status.`,
-  waterfront:`Waterfront adds premium value & strong rental appeal.`,
-  views:`Views significantly boost attraction & rental pricing.`
+  bedrooms:`Bedrooms directly determine how many people can comfortably live in a house. 
+Families often need at least 2–3 bedrooms, while students or singles prefer smaller spaces.`,
+  bathrooms:`Bathrooms heavily affect comfort and livability. Homes with multiple bathrooms reduce conflicts and improve convenience.`,
+  lotarea:`Lot Area represents total outdoor land size. Bigger lots allow for parking, gardening, and outdoor spaces.`,
+  grade:`Grade reflects construction quality and finishing. High-grade homes rent quickly because tenants value comfort and style.`,
+  condition:`Condition measures upkeep and repair status. Well-maintained properties feel safe and trustworthy.`,
+  waterfront:`Waterfront properties carry premium rental appeal. Scenic water access is seen as luxury and lifestyle.`,
+  views:`Views enrich living experience and directly boost value. Tenants are drawn to scenic cityscapes, mountains, or sea views.`
 };
 
-// IMAGES
-const images = {
-
-  bedrooms: [
-    { src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80", caption: "Cozy Bedroom" },
-    { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80", caption: "Spacious Bedroom" }
+/* images*/
+const images={
+  bedrooms:[
+    {src:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",caption:"Cozy Bedroom"},
+    {src:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c",caption:"Spacious Master Bedroom"}
   ],
-
-  bathrooms: [
-    { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Modern Bathroom" },
-    { src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80", caption: "Luxury Bathroom" }
+  bathrooms:[
+    {src:"https://st.hzcdn.com/simgs/pictures/bathrooms/wootton-mount-bournemouth-by-wn-interiors-wn-interiors-img~ec5167b50cff4ef4_14-9160-1-17c4d6a.jpg",caption:"Modern Bathroom"},
+    {src:"https://oneweekbath.com/wp-content/uploads/high-end-bathroom-remodel.jpg",caption:"Luxury Bath"}
   ],
-
-  lotarea: [
-    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80", caption: "Large Backyard" },
-    { src: "https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?auto=format&fit=crop&w=1000&q=80", caption: "Open Lot Area" }
+  lotarea:[
+    {src:"https://www.shrubhub.com/img/blog/large_backyard_design_01.jpg",caption:"Large Backyard"},
+    {src:"https://files.openlot.com.au/p/home-design/Aspen%20by%20Orbit%20Homes%20Fa%C3%A7ade___1743635411.jpg",caption:"Open Lot Area"}
   ],
-
-  grade: [
-  { src: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80", caption: "Grade 1: Basic" },
-  { src: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80", caption: "Grade 5: Standard" },
-  { src: "https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1200&q=80", caption: "Grade 9: Premium" },
-  { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80", caption: "Grade 13: Luxury" }
-],
-
-
-  condition: [
-    { src: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1000&q=80", caption: "Poor Condition" },
-    { src: "https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1000&q=80", caption: "Good Condition" },
-    { src: "https://images.unsplash.com/photo-1600585153898-5f9e1eaa41da?auto=format&fit=crop&w=1000&q=80", caption: "Excellent Condition" }
+  grade:[
+    {src:"https://hips.hearstapps.com/hmg-prod/images/dutch-colonial-house-style-66956274903da.jpg?crop=1.00xw:0.671xh;0,0.131xh&resize=1120:*",caption:"Grade 1: Basic"},
+    {src:"https://www.maramani.com/cdn/shop/files/Two-story4bedroomhouse-ID2441101.jpg?crop=center&height=1200&v=1715872374&width=1200",caption:"Grade 5: Standard"},
+    {src:"https://static.vecteezy.com/system/resources/thumbnails/022/903/186/small_2x/ai-generative-3d-modern-luxury-real-estate-house-for-sale-and-rent-luxury-property-concept-photo.jpg",caption:"Grade 9: Premium "},
+    {src:"https://q-xx.bstatic.com/xdata/images/hotel/max1024x768/171764238.jpg?k=9b0afc2a0b64de34986e36a37ab48a3bed93254b0b392ecc4a557949f88652f4&o=",caption:"Grade 13: Luxury"}
   ],
-
-  waterfront: [
-    { src: "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=1000&q=80", caption: "Waterfront" },
-    { src: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80", caption: "Non-Waterfront" }
+  condition:[
+    {src:"https://media.istockphoto.com/id/630070304/photo/abandoned-old-timber-home.jpg?s=612x612&w=0&k=20&c=sJel3uQ3qe1H-KRUONFuTJtFgBe28bERldr2CEqkb40=",caption:"Condition(1): Poor"},
+    {src:"https://porch.com/advice/wp-content/uploads/2022/05/todd-kent-178j8tJrNlc-unsplash-2.jpg",caption:"Condition(3): Good"},
+    {src:"https://plus.unsplash.com/premium_photo-1661883982941-50af7720a6ff?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmVhdXRpZnVsJTIwaG91c2V8ZW58MHx8MHx8fDA%3D",caption:"Condition(5): Exellent"}
   ],
-
-  views: [
-    { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80", caption: "No View" },
-    { src: "https://images.unsplash.com/photo-1486308510493-aa64833637b1?auto=format&fit=crop&w=1000&q=80", caption: "Good View" },
-    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80", caption: "Panoramic View" }
+  waterfront:[
+    {src:"https://media.classicahomes.com/386/2025/6/25/Classica_Homes_June25_Building_the_Perfect_Waterfront_Property.jpeg?width=1920&height=1277&fit=bounds&ois=b4a6391",caption:"With waterfront"},
+    {src:"https://housing.com/news/wp-content/uploads/2023/03/exterior-design-shutterstock_1932966368-1200x700-compressed.jpg",caption:"Without Waterfront"}
+  ],
+  views:[
+    {src:"https://quarryviewbuildinggroup.com/wp-content/uploads/2019/10/Rural-Building-Blog-Post-Photo-1.jpg",caption:"View(0): None"},
+    {src:"https://media.istockphoto.com/id/1326994520/photo/we-all-deserve-a-fresh-break-from-the-city.jpg?s=612x612&w=0&k=20&c=cdiYaJ2_BDlDkZ5c71LaKRrMxf08pqY5ZW8BUuzT9h4=",caption:"View(2): Good "},
+    {src:"https://cdn.homedsgn.com/wp-content/uploads/2018/08/Piedra-Toro-03.jpg",caption:"View(4): Panaromic"},
   ]
 };
 
-// Guide Update Function
 function updateGuide(field){
   const g=document.getElementById('guideBox');
+  const aiDiv=document.getElementById('aiSuggestion');
   g.classList.add('hiding');
   setTimeout(()=>{
-    g.innerHTML=`<h2>${fieldLabels[field]}</h2><p>${fallbacks[field]}</p><div id='aiSuggestion'></div>`;
+    g.innerHTML=
+      `<div class="guide-subtitle">Field insight</div>
+       <h2>${fieldLabels[field]}</h2>
+       <p>${fallbacks[field]}</p>
+       <div id="aiSuggestion"></div>`;
     if(images[field]){
       const gallery=document.createElement('div');
       gallery.className="image-gallery";
@@ -268,81 +591,74 @@ function updateGuide(field){
   },350);
 }
 
-// Add listeners
-['bedrooms','bathrooms','lotarea','grade','condition','waterfront','views']
-.forEach(id=>{
+['bedrooms','bathrooms','lotarea','grade','condition','waterfront','views'].forEach(id=>{
   const el=document.getElementById(id);
-  if(el){el.addEventListener('focus',()=>updateGuide(id)); el.addEventListener('click',()=>updateGuide(id));}
+  if(el){
+    el.addEventListener('focus',()=>updateGuide(id));
+    el.addEventListener('click',()=>updateGuide(id));
+  }
 });
 
-// Typewriter
 function typeWriter(el,text,speed=30){
   el.textContent="";
   let i=0;
-  (function typing(){
+  function typing(){
     if(i<text.length){
       el.textContent+=text.charAt(i);
       i++;
       setTimeout(typing,speed);
     }
-  })();
+  }
+  typing();
 }
 
-// Prediction Handling
-document.getElementById('predictBtn').addEventListener('click', async ()=>{
-
+/* Predict button */
+document.getElementById('predictBtn').addEventListener('click', async () => {
   const data={
-    bedrooms:bedrooms.value,
-    bathrooms:bathrooms.value,
-    lotarea:lotarea.value,
-    grade:grade.value,
-    condition:condition.value,
-    waterfront:waterfront.value,
-    views:views.value
+    bedrooms:document.getElementById('bedrooms').value,
+    bathrooms:document.getElementById('bathrooms').value,
+    lotarea:document.getElementById('lotarea').value,
+    grade:document.getElementById('grade').value,
+    condition:document.getElementById('condition').value,
+    waterfront:document.getElementById('waterfront').value,
+    views:document.getElementById('views').value
   };
 
   const resultDiv=document.getElementById('result');
   const aiDiv=document.getElementById('aiSuggestion');
 
   try{
-    const res=await fetch("/predict",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+    const res=await fetch('http://127.0.0.1:5000/predict',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify(data)
     });
-
     const r=await res.json();
+    resultDiv.style.display='block';
+    resultDiv.style.background='#052e16';
+    resultDiv.style.color='#a7f3d0';
 
-    resultDiv.style.display="block";
-    resultDiv.style.background='#123624';
-    resultDiv.style.color='#aaffaa';
-
-    const rawText=r.message || 'Prediction complete.';
-    const priceText=rawText.split(/[.!\n]/)[0] + ".";
+    let rawText=r.message||'Prediction complete.';
+    let priceText=rawText.split(/[.!\n]/)[0]+".";
     typeWriter(resultDiv,priceText,30);
 
-    aiDiv.style.display="block";
-    aiDiv.textContent="Thinking of best matches...";
+    aiDiv.style.display='block';
+    aiDiv.textContent="Finding best matches for this range...";
 
-    const aiRes=await fetch("/suggest",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+    const aiRes=await fetch('http://127.0.0.1:5000/suggest',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({price:r.prediction})
     });
-
     const aiData=await aiRes.json();
-    aiDiv.textContent=aiData.suggestion || "No suggestion available.";
-
+    aiDiv.textContent=aiData.suggestion||"No suggestion available.";
   }catch(e){
-    resultDiv.style.display="block";
+    resultDiv.style.display='block';
     resultDiv.style.background='#3a1e1e';
     resultDiv.style.color='#ffbaba';
     resultDiv.textContent='Network error.';
   }
 });
 </script>
-
 </body>
 </html>
-
-
