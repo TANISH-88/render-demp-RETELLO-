@@ -3,6 +3,7 @@ import joblib, json, re, os, time
 import numpy as np
 from dotenv import load_dotenv
 import requests
+from flask_cors import CORS
 
 def clean_text(text: str) -> str:
     if not text:
@@ -25,11 +26,9 @@ GROQ_KEY = os.getenv("GROQ_API_KEY")
 GROQ_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "mixtral-8x7b-32768")
 
-print("Loaded GROQ_API_KEY:", bool(GROQ_KEY))
-print("Using Groq URL:", GROQ_URL)
-print("Model in use:", GROQ_MODEL)
-
 app = Flask(__name__)
+CORS(app)
+
 model = joblib.load("rent_pipe.pkl")
 
 @app.route("/")
@@ -64,21 +63,19 @@ def suggest():
         if not GROQ_KEY:
             return jsonify({"suggestion": ["Groq API key not found. Check Render environment."]})
 
-        def call_groq(prompt_payload):
+        def call_groq(payload):
             resp = requests.post(
                 GROQ_URL,
                 headers={
                     "Authorization": f"Bearer {GROQ_KEY}",
                     "Content-Type": "application/json"
                 },
-                json=prompt_payload,
+                json=payload,
                 timeout=30
             )
             if resp.status_code != 200:
-                print("Groq API Error:", resp.status_code, resp.text)
                 raise Exception(f"Groq API returned {resp.status_code}")
             j = resp.json()
-            print("🔍 GROQ RAW:", j)
             if "choices" in j and len(j["choices"]) > 0:
                 msg = j["choices"][0].get("message", {}).get("content", "")
                 return msg.strip()
@@ -89,14 +86,14 @@ def suggest():
             "Find 3–5 realistic and unique luxury rental properties within this budget.\n"
             "Search globally — India, Dubai, Singapore, London, New York, etc.\n"
             "Each suggestion must include Property Name — Area, City, Country.\n"
-            "Avoid repeating any known names like Lodha, DLF, Prestige, etc.\n"
+            "Avoid repeating known names.\n"
             "Output only a JSON array of strings."
         )
 
         payload = {
             "model": GROQ_MODEL,
             "messages": [
-                {"role": "system", "content": "You are a global real estate AI assistant that outputs only JSON arrays of property names."},
+                {"role": "system", "content": "Return only JSON arrays of property names."},
                 {"role": "user", "content": user_prompt}
             ],
             "max_tokens": 280,
@@ -108,14 +105,11 @@ def suggest():
         parsed = parse_json_array(raw_clean)
 
         if not parsed:
-            retry_prompt = (
-                "Retry and return 3–5 unique global properties as a valid JSON array of strings. "
-                "Do not include explanations or text."
-            )
+            retry_prompt = "Return 3–5 global properties strictly as a JSON array of strings."
             payload_retry = {
                 "model": GROQ_MODEL,
                 "messages": [
-                    {"role": "system", "content": "Return only valid JSON arrays of global property names."},
+                    {"role": "system", "content": "Return only valid JSON arrays."},
                     {"role": "user", "content": retry_prompt}
                 ],
                 "max_tokens": 250,
@@ -129,11 +123,9 @@ def suggest():
         if parsed:
             return jsonify({"suggestion": parsed})
         else:
-            return jsonify({"suggestion": ["Unable to fetch live property suggestions. Please retry."]})
+            return jsonify({"suggestion": ["Unable to fetch live property suggestions."]})
 
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         return jsonify({"suggestion": [f"Error: {str(e)}"]})
 
 if __name__ == "__main__":
