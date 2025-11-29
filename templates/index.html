@@ -5,15 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rentello</title>
 <style>
-  
-
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:"Segoe UI", Arial, sans-serif;  
   color:white;
    overflow-x:hidden; 
     background:#0e0e0e; }
 
-  
   .page-load {
     opacity:0;
     transform: translateY(-30px);
@@ -23,152 +20,77 @@
     to { opacity:1; transform: translateY(0); }
   }
 
-  
   .navbar {
     position: fixed; top:0; left:0; width:100%;
     display:flex; justify-content:space-between; align-items:center;
     padding:15px 60px; z-index:1000;
     background: rgba(255,255,255,0.08); backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255
-    ,255,0.1);
+    border-bottom:1px solid rgba(255,255,255,0.1);
   }
-  .navbar-left { font-size:28px; 
-     font-weight:bold;
-      letter-spacing:1px; }
+  .navbar-left { font-size:28px; font-weight:bold; letter-spacing:1px; }
+  .navbar-right { display:flex; gap:30px; }
 
-  .navbar-right { display:flex;
-     gap:30px; }
-
-
-  .nav-btn { background:transparent;
-     border:none; 
-     color:white; 
-     font-size:16px; 
-     cursor:pointer; 
-     padding:8px 14px; 
-     border-radius:6px; 
+  .nav-btn { background:transparent; border:none; color:white; font-size:16px;
+     cursor:pointer; padding:8px 14px; border-radius:6px;
      transition:background 0.3s; }
+  .nav-btn:hover { background: rgba(255,255,255,0.15); }
 
-  .nav-btn:hover
-   { 
-    background: rgba(255,255,255,0.15); 
-  }
-
-  
   .hero {
-    height:100vh;
-     width:100%; 
-     position:relative;
-      overflow:hidden;
-    display:flex; 
-    justify-content:center;
-     align-items:center;
-      text-align:center; 
-      padding:0 20px;
+    height:100vh; width:100%; position:relative; overflow:hidden;
+    display:flex; justify-content:center; align-items:center;
+    text-align:center; padding:0 20px;
   }
   .bg-layer {
-    position:absolute; 
-    top:0; 
-    left:0;
-     width:100%;
-      height:100%;
-    background-size:cover;
-     background-position:center;
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background-size:cover; background-position:center;
     transition: opacity 2s ease-in-out, transform 8s ease-in-out;
-    z-index:-2;
-     opacity:0;
+    z-index:-2; opacity:0;
   }
-  .bg-layer.active {
-     opacity:1; 
-     transform: scale(1.05); 
-    }
+  .bg-layer.active { opacity:1; transform: scale(1.05); }
+
   .overlay {
-    position:absolute; 
-    top:0; 
-    left:0; 
-    width:100%;
-     height:100%;
-    background:rgba(0,0,0,0.55);
-     z-index:-1;
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.55); z-index:-1;
   }
 
-  .hero-content {
-    position: relative; 
-    z-index: 1;
-     max-width: 800px; 
-     margin: 0 auto; 
-     text-align: center;
-  }
-
-
+  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; text-align: center; }
 
   .hero-content h1, .hero-content p {
     opacity:0; transform:translateY(30px);
     transition: opacity 1.6s ease, transform 1.6s ease;
   }
 
-
-  .fade-in {
-    opacity:1 !important; transform:translateY(0) !important;
-  }
-
-
-  .fade-out {
-    opacity:0 !important; transform:translateY(40px) !important;
-  }
-
+  .fade-in { opacity:1 !important; transform:translateY(0) !important; }
+  .fade-out { opacity:0 !important; transform:translateY(40px) !important; }
 
   .hero-content h1 {
-    font-size: 58px;
-     font-weight: 600; 
-     line-height: 1.2;
-      margin-bottom: 20px;
+    font-size: 58px; font-weight: 600; line-height: 1.2;
+    margin-bottom: 20px;
     text-shadow: 3px 3px 14px rgba(0,0,0,0.9);
   }
 
   .hero-content p {
-    font-size: 20px; 
-    line-height: 1.6; 
-    margin-bottom: 40px;
+    font-size: 20px; line-height: 1.6; margin-bottom: 40px;
     text-shadow: 2px 2px 12px rgba(0,0,0,0.8);
   }
 
-  .hero-buttons { display:flex; 
-    justify-content:center;
-     gap:20px; }
+  .hero-buttons { display:flex; justify-content:center; gap:20px; }
 
-  
   .btn {
-    padding:12px 28px; 
-    font-size:16px; 
-    font-weight:500;
-    border:none; 
-    border-radius:8px; 
-    cursor:pointer;
-     transition:all 0.3s ease;
+    padding:12px 28px; font-size:16px; font-weight:500;
+    border:none; border-radius:8px; cursor:pointer; transition:all 0.3s ease;
   }
 
-  .btn-primary { background:#ff7b54; 
-    color:white; }
-
-  .btn-primary:hover { 
-    background:#ff5733; 
-    transform: scale(1.05); 
-    box-shadow:0 0 12px rgba(255,123,84,0.6); }
-
-  .btn-secondary { 
-    background: rgba(255,255,255,0.15);
-     color:white; 
-     border:1px solid rgba(255,255,255,0.3); }
-
-  .btn-secondary:hover { 
-    background: rgba(255,255,255,0.3); 
-    transform: scale(1.05);
-     }
-
-
-
-
+  .btn-primary { background:#ff7b54; color:white; }
+  .btn-primary:hover {
+    background:#ff5733; transform: scale(1.05);
+    box-shadow:0 0 12px rgba(255,123,84,0.6);
+  }
+  .btn-secondary {
+    background: rgba(255,255,255,0.15); color:white;
+    border:1px solid rgba(255,255,255,0.3);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -193,7 +115,10 @@
     <h1 id="heroTitle">Find Your Dream Home</h1>
     <p id="heroDesc">Discover the best rental homes in your city with Rentello.</p>
     <div class="hero-buttons page-load" style="animation-delay:1s">
-     <a href="dashboard.html" ><button class="btn btn-primary">Let's predict</button></a>
+
+      <!-- FIXED HERE -->
+      <a href="/dashboard"><button class="btn btn-primary">Let's predict</button></a>
+
       <button class="btn btn-secondary">Explore Listings</button>
     </div>
   </div>
@@ -262,13 +187,11 @@ function changeSlide() {
   }, 40);
 }
 
-
 window.addEventListener("load", () => {
   setTimeout(() => {
     showText(titles[0], descriptions[0]);
   }, 900);
 });
-
 
 setInterval(changeSlide, 6000);
 </script>
